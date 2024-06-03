@@ -5,21 +5,20 @@ var_dump($_SESSION["loggedin"]); // Debug statement to check the value of $_SESS
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 if (isset($_POST['save'])) {
-  if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-      $sql = "INSERT INTO blog (user_id, blog_title, blog_description, time)
-              VALUES ('" . $_SESSION["id"] . "', '" . $_POST["blog_title"] . "', '" . $_POST["blog_description"] . "', '" . $_POST["time"] . "')";
-  
-      if (mysqli_query($conn, $sql)) {
-          $last_id = mysqli_insert_id($conn);
-          $sqlImg = "INSERT INTO blog_pictures (img_url, post_id, is_main)
-                     VALUES ('" . $_POST["img_url"] . "', $last_id, 1)";
-          mysqli_query($conn, $sqlImg);
-      }
-  } else {
-      echo "You must be logged in to create a post.";
-  }
+    if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+        $sql = "INSERT INTO blog (user_id, blog_title, blog_description, time)
+                VALUES ('" . $_SESSION["id"] . "', '" . $_POST["blog_title"] . "', '" . $_POST["blog_description"] . "', CURRENT_TIMESTAMP)";
+    
+        if (mysqli_query($conn, $sql)) {
+            $last_id = mysqli_insert_id($conn);
+            $sqlImg = "INSERT INTO blog_pictures (img_url, post_id, is_main)
+                       VALUES ('" . $_POST["img_url"] . "', $last_id, 1)";
+            mysqli_query($conn, $sqlImg);
+        }
+    } else {
+        echo "You must be logged in to create a post.";
+    }
 }
 ?>
 
@@ -33,9 +32,17 @@ if (isset($_POST['save'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         body {
@@ -48,16 +55,17 @@ if (isset($_POST['save'])) {
         }
 
         nav {
-            background: rgba(0, 0, 0, 0.7);
+            background: transparent; /* Change to transparent to match the body background */
             padding: 10px 20px;
+            border-bottom: none; /* Remove any border */
+            position: relative;
+            z-index: 10;
         }
 
         #menuToggle {
             display: block;
             position: relative;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
+            z-index: 11; /* Ensure the menu toggle is above the nav */
             -webkit-user-select: none;
             user-select: none;
         }
@@ -77,8 +85,8 @@ if (isset($_POST['save'])) {
             width: 40px;
             height: 32px;
             position: absolute;
-            top: 0px;
-            left: 0px;
+            top: 0;
+            left: 0;
             cursor: pointer;
             opacity: 0;
             z-index: 2;
@@ -146,10 +154,52 @@ if (isset($_POST['save'])) {
 
         .container {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .blog-post {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .blog-post img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .blog-post h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .blog-post p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .blog-post .actions {
+            margin-top: 10px;
+        }
+
+        .blog-post .actions a {
+            text-decoration: none;
+            color: red;
+            font-size: 24px;
+        }
+
+        .form-container {
+            display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
         }
 
         form {
@@ -166,7 +216,8 @@ if (isset($_POST['save'])) {
             margin: 10px 0 5px;
         }
 
-        input[type="text"], input[type="date"] {
+        input[type="text"],
+        input[type="date"] {
             width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 10px;
@@ -214,9 +265,6 @@ if (isset($_POST['save'])) {
             
             <label for="blog_description">Blog Description</label>
             <input type="text" id="blog_description" name="blog_description" required>
-            
-            <label for="time">Time</label>
-            <input type="date" id="time" name="time" required>
             
             <label for="img_url">Picture URL</label>
             <input type="text" id="img_url" name="img_url" placeholder="Image URL" required>

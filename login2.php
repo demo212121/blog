@@ -91,7 +91,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,210 +98,122 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         body {
-            margin: 20;
-            padding: 1;
-            background: #232323;
-            color: black;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             font-family: "Avenir Next", "Avenir", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        #menuToggle {
-            display: block;
-            position: relative;
-            top: 50px;
-            left: 50px;
-            z-index: 1;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        #menuToggle a {
-            text-decoration: none;
-            color: #89CFF0;
-            transition: color 0.3s ease;
-        }
-
-        #menuToggle a:hover {
-            color: white;
-        }
-
-        #menuToggle input {
-            display: block;
-            width: 40px;
-            height: 32px;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            cursor: pointer;
-            opacity: 0; 
-            z-index: 2; 
-            -webkit-touch-callout: none;
-        }
-
-        #menuToggle span {
-            display: block;
-            width: 33px;
-            height: 4px;
-            margin-bottom: 5px;
-            position: relative;
-            background: black;
-            border-radius: 3px;
-            z-index: 1;
-            transform-origin: 4px 0px;
-            transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                        background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                        opacity 0.55s ease;
-        }
-
-        #menuToggle span:first-child {
-            transform-origin: 0% 0%;
-        }
-
-        #menuToggle span:nth-last-child(2) {
-            transform-origin: 0% 100%;
-        }
-
-        #menuToggle input:checked ~ span {
-            opacity: 1;
-            transform: rotate(45deg) translate(-2px, -1px);
-            background: #89CFF0;
-        }
-
-        #menuToggle input:checked ~ span:nth-last-child(3) {
-            opacity: 0;
-            transform: rotate(0deg) scale(0.2, 0.2);
-        }
-
-        #menuToggle input:checked ~ span:nth-last-child(2) {
-            transform: rotate(-45deg) translate(0, -1px);
-        }
-
-        #menu {
-            position: absolute;
-            width: 300px;
-            margin: -100px 0 0 -50px;
-            padding: 50px;
-            padding-top: 125px;
-            background: black;
-            list-style-type: none;
-            -webkit-font-smoothing: antialiased;
-            transform-origin: 0% 0%;
-            transform: translate(-100%, 0);
-            transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-        }
-
-        #menu li {
-            padding: 10px 0;
-            font-size: 22px;
-        }
-
-        #menuToggle input:checked ~ ul {
-            transform: none;
-        }
-
-        body {
-            background-image: linear-gradient(to bottom left, black, pink, red, green, orange, blue, purple, yellow, white);
-        }
-
-        /* Full-width inputs */
-        input[type=text], input[type=password] {
+        .form-container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
             width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
             border: 1px solid #ccc;
-            box-sizing: border-box;
+            border-radius: 5px;
+            font-size: 16px;
         }
 
         button {
-            background-color: black;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
+            width: 100%;
+            padding: 10px;
+            background-color: #89CFF0;
             border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
             cursor: pointer;
-            width: 20%;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            opacity: 0.8;
+            background-color: #6fa3cc;
         }
 
-        .container {
-            padding: 16px;
-            margin-right: auto;
-            margin-left: auto;
-            width: 30%;
-            border: 3px solid black;
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
 
-        span.psw {
-            float: right;
-            padding-top: 16px;
-        }
-
-        @media screen and (max-width: 300px) {
-            span.psw {
-                display: block;
-                float: none;
-            }
-            .cancelbtn {
-                width: 20%;
-            }
-        }
-
-        .imgcontainer {
-            width: 25%;
-            background-color: red;
-            margin-right: auto;
-            margin-left: auto;
-        }
-
-        #login-error-msg-holder {
-            width: 100%;
-            height: 100%;
-            display: grid;
-            justify-items: center;
+        .checkbox-container {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        #login-error-msg {
-            width: 23%;
-            text-align: center;
-            margin: 0;
-            padding: 5px;
-            font-size: 12px;
-            font-weight: bold;
-            color: #8a0000;
-            border: 1px solid #8a0000;
-            background-color: #e58f8f;
-            opacity: 0;
+        .checkbox-container label {
+            font-size: 14px;
         }
 
-        #error-msg-second-line {
-            display: block;
+        .checkbox-container input {
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <form method="post">
-        <div class="imgcontainer"></div>
-        
-        <div class="container">
-            <label for="username"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="username" required value="<?php echo htmlspecialchars($username); ?>"><br>
-            <span><?php echo $username_err; ?></span>
-
-            <label for="password"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="password" required><br>
-            <span><?php echo $password_err; ?></span>
-
+    <div class="form-container">
+        <h2>Login</h2>
+        <?php 
+        if(!empty($username_err)){
+            echo '<div class="error-message">' . $username_err . '</div>';
+        } 
+        if(!empty($password_err)){
+            echo '<div class="error-message">' . $password_err . '</div>';
+        }
+        ?>
+        <form method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required value="<?php echo htmlspecialchars($username); ?>"><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
             <button type="submit" name="submit">Login</button>
-            <label>
-              <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
-        </div>
-    </form>
-    
+            <div class="checkbox-container">
+                <a href="register.php">Don't have an account?</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

@@ -3,7 +3,7 @@ include "db.php";
 session_start();
 
 // Handle blog post deletion
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     // Display user information
     echo "Logged in as: " . $_SESSION["username"];
 } else {
@@ -79,11 +79,9 @@ $result = $conn->query($sql);
             0% {
                 background-position: 0% 50%;
             }
-
             50% {
                 background-position: 100% 50%;
             }
-
             100% {
                 background-position: 0% 50%;
             }
@@ -99,16 +97,16 @@ $result = $conn->query($sql);
         }
 
         nav {
-            background: rgba(0, 0, 0, 0.7);
+            background: transparent;
             padding: 10px 20px;
+            position: relative;
+            z-index: 10;
         }
 
         #menuToggle {
             display: block;
             position: relative;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
+            z-index: 11; /* Ensure the menu toggle is above the nav */
             -webkit-user-select: none;
             user-select: none;
         }
@@ -128,8 +126,8 @@ $result = $conn->query($sql);
             width: 40px;
             height: 32px;
             position: absolute;
-            top: 0px;
-            left: 0px;
+            top: 0;
+            left: 0;
             cursor: pointer;
             opacity: 0;
             z-index: 2;
@@ -157,18 +155,18 @@ $result = $conn->query($sql);
             transform-origin: 0% 100%;
         }
 
-        #menuToggle input:checked~span {
+        #menuToggle input:checked ~ span {
             opacity: 1;
             transform: rotate(45deg) translate(-2px, -1px);
             background: #89CFF0;
         }
 
-        #menuToggle input:checked~span:nth-last-child(3) {
+        #menuToggle input:checked ~ span:nth-last-child(3) {
             opacity: 0;
             transform: rotate(0deg) scale(0.2, 0.2);
         }
 
-        #menuToggle input:checked~span:nth-last-child(2) {
+        #menuToggle input:checked ~ span:nth-last-child(2) {
             transform: rotate(-45deg) translate(0, -1px);
         }
 
@@ -191,7 +189,7 @@ $result = $conn->query($sql);
             font-size: 22px;
         }
 
-        #menuToggle input:checked~ul {
+        #menuToggle input:checked ~ ul {
             transform: none;
         }
 
@@ -203,29 +201,38 @@ $result = $conn->query($sql);
         }
 
         .blog-post {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
             margin: 20px;
             padding: 20px;
             width: 300px;
             text-align: center;
             position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .blog-post img {
-            max-width: 100%;
-            border-radius: 5px;
+        .blog-post:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
         }
 
         .blog-post h2 {
             font-size: 24px;
             margin: 10px 0;
+            color: #333;
         }
 
         .blog-post p {
             font-size: 16px;
             color: #555;
+        }
+
+        .blog-post img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .blog-post .actions {
@@ -246,7 +253,7 @@ $result = $conn->query($sql);
         }
 
         form {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -263,26 +270,36 @@ $result = $conn->query($sql);
         input[type="date"] {
             width: calc(100% - 22px);
             padding: 10px;
-            margin-bottom: 10px;
+            margin: 5px 0 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 16px;
         }
 
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
+        input[type="submit"] {
             background-color: #89CFF0;
+            color: white;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            color: white;
-            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #6fa3cc;
+        input[type="submit"]:hover {
+            background-color: #6baed6;
+        }
+
+        .like-button i.fa-heart {
+            animation: pulse 0.6s infinite alternate;
+            color: red;
+        }
+
+        @keyframes pulse {
+            to {
+                transform: scale(1.2);
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -325,6 +342,9 @@ $result = $conn->query($sql);
                 <a href="input.php">
                     <li>Create post!</li>
                 </a>
+                <a href="login2.php">
+                    <li>Login</li>
+                </a>
                 <a href="logout.php">
                     <li>Logout</li>
                 </a>
@@ -353,27 +373,25 @@ $result = $conn->query($sql);
                             <h2><?php echo $row['blog_title']; ?></h2>
                             <p><?php echo $row['blog_description']; ?></p>
                             <p><?php echo $row['time']; ?></p>
+                            <?php
+                            if ($picturesResult->num_rows > 0) {
+                                while ($pictureRow = $picturesResult->fetch_assoc()) {
+                                    ?>
+                                    <img src="<?php echo $pictureRow['img_url']; ?>" alt="Blog Image">
+                                    <?php
+                                }
+                            }
+                            ?>
                         </a>
                         <div class="actions">
                             <a href="#" class="like-button" data-post-id="<?php echo $postId; ?>">
-                                <i class="fa <?php echo $userLiked ? 'fa-heart' : 'fa-heart-o'; ?>" style="color: red;"></i>
+                                <i class="fa <?php echo $userLiked ? 'fa-heart' : 'fa-heart-o'; ?>"></i>
                             </a>
                             <span id="like-count-<?php echo $postId; ?>"><?php echo $likeCount; ?></span>
                             <?php if ($_SESSION["id"] == $userId) { ?>
-                                <a href="delete_post.php?delete_post_id=<?php echo $postId; ?>" onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</a>
+                                <a href="delete_post.php?delete_post_id=<?php echo $postId; ?>" onclick="return confirm('Are you sure you want to delete this post?')" style="color: red;">Delete Post</a>
                             <?php } ?>
                         </div>
-                        <?php
-                        if ($picturesResult->num_rows > 0) {
-                            while ($picRow = $picturesResult->fetch_assoc()) {
-                                ?>
-                                <div>
-                                    <img src="<?php echo $picRow['img_url']; ?>" alt="Image">
-                                </div>
-                                <?php
-                            }
-                        }
-                        ?>
                     </div>
                     <?php
                 }

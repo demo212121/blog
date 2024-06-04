@@ -2,23 +2,26 @@
 session_start();
 include "db.php";
 
-// Check if 'blog_id' parameter is set in the URL
+// Check if 'id' parameter is set in the URL
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die('Error: Missing or invalid blog post ID.');
 }
-
+ echo "<div class='logged-in-message'>Logged in as: " . $_SESSION["username"] . "</div>";
 $id = intval($_GET['id']); // Sanitize the input to prevent SQL injection
 
 $sql = "SELECT * FROM blog WHERE id=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
-$result = $stmt->get_result();
+$stmt->store_result(); // Store the result to get properties
 
 // Check if the query was successful
-if ($result === false) {
-    die('Error: ' . $conn->error);
+if ($stmt->num_rows == 0) {
+    die('Error: Blog post not found.');
 }
+
+$stmt->bind_result($blog_id, $blog_title, $blog_description, $time);
+$stmt->fetch();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -253,6 +256,17 @@ if ($result === false) {
         .comment-form button:hover {
             background-color: #6fa3cc;
         }
+                .logged-in-message {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            border: 2px solid #89CFF0;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
     </style>
 </head>
 
@@ -271,31 +285,26 @@ if ($result === false) {
     </nav>
     <div class="container">
         <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                echo "<div class='blog-post'>";
-                echo "<h2>" . htmlspecialchars($row['blog_title']) . "</h2>";
-                echo "<p>" . htmlspecialchars($row['blog_description']) . "</p>";
-                echo "<div class='time'>" . htmlspecialchars($row['time']) . "</div>";
+        echo "<div class='blog-post'>";
+        echo "<h2>" . htmlspecialchars($blog_title) . "</h2>";
+        echo "<p>" . htmlspecialchars($blog_description) . "</p>";
+        echo "<div class='time'>" . htmlspecialchars($time) . "</div>";
 
-                $sqlp = "SELECT * FROM blog_pictures WHERE post_id=?";
-                $stmtp = $conn->prepare($sqlp);
-                $stmtp->bind_param("i", $row['id']);
-                $stmtp->execute();
-                $resultp = $stmtp->get_result();
+        $sqlp = "SELECT img_url FROM blog_pictures WHERE post_id=?";
+        $stmtp = $conn->prepare($sqlp);
+        $stmtp->bind_param("i", $blog_id);
+        $stmtp->execute();
+        $stmtp->store_result();
 
-                if ($resultp->num_rows > 0) {
-                    while ($rowp = $resultp->fetch_assoc()) {
-                        echo "<img src='" . htmlspecialchars($rowp['img_url']) . "'>";
-                    }
-                } else {
-                    echo "<p>No images available</p>";
-                }
-                echo "</div>";
+        if ($stmtp->num_rows > 0) {
+            $stmtp->bind_result($img_url);
+            while ($stmtp->fetch()) {
+                echo "<img src='" . htmlspecialchars($img_url) . "'>";
             }
         } else {
-            echo "<div class='blog-post'>No blog post found</div>";
+            echo "<p>No images available</p>";
         }
+        echo "</div>";
         ?>
 
         <div class="comment-form">
@@ -309,20 +318,19 @@ if ($result === false) {
         <div class="comment-section" id="commentSection">
             <h3>Comments</h3>
             <?php
-            $sqlc = "SELECT * FROM blog_comment WHERE blog_id=?";
+            $sqlc = "SELECT id, comment, user_id FROM blog_comment WHERE blog_id=?";
             $stmtc = $conn->prepare($sqlc);
             $stmtc->bind_param("i", $id);
             $stmtc->execute();
-            $resultc = $stmtc->get_result();
+            $stmtc->store_result();
 
-            if ($resultc === false) {
-                echo "<p>Error fetching comments: " . $conn->error . "</p>";
-            } elseif ($resultc->num_rows > 0) {
-                while ($rowc = $resultc->fetch_assoc()) {
-                    echo "<div class='comment-item' id='comment-" . $rowc['id'] . "'>";
-                    echo "<p>" . htmlspecialchars($rowc['comment']) . "</p>";
-                    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $rowc['user_id']) {
-                        echo "<button class='delete-button' onclick='deleteComment(" . $rowc['id'] . ")'>Delete</button>";
+            if ($stmtc->num_rows > 0) {
+                $stmtc->bind_result($comment_id, $comment, $user_id);
+                while ($stmtc->fetch()) {
+                    echo "<div class='comment-item' id='comment-" . $comment_id . "'>";
+                    echo "<p>" . htmlspecialchars($comment) . "</p>";
+                    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
+                        echo "<button class='delete-button' onclick='deleteComment(" . $comment_id . ")'>Delete</button>";
                     }
                     echo "</div>";
                 }

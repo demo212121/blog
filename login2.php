@@ -3,7 +3,7 @@ session_start(); // Start session
 
 // Check if the user is already logged in, if yes, redirect them to the profile page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: main.php");
+   header("Location: /blog/main.php?user=".$user."");
     exit;
 }
 

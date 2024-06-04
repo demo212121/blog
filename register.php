@@ -1,57 +1,122 @@
 <?php
+session_start(); // Start session
+
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Include database connection
 include "db.php";
-$errorMessage = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// Define variables and initialize with empty values
+$username = $password = $confirm_password = "";
+$username_err = $password_err = $confirm_password_err = "";
 
-    // Check if username already exists
-    $checkQuery = "SELECT * FROM users WHERE username = ?";
-    $checkStmt = $conn->prepare($checkQuery);
-    $checkStmt->bind_param("s", $username);
-    $checkStmt->execute();
-    $result = $checkStmt->get_result();
+// Processing form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if ($result->num_rows > 0) {
-        // Username already exists, set error message
-        $errorMessage = "Username already exists. Please choose a different username.";
+    // Validate username
+    if (empty(trim($_POST["username"]))) {
+        $username_err = "Please enter a username.";
     } else {
-        // Insert new user into the database
-        $insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
-        $insertStmt = $conn->prepare($insertQuery);
-        // Hash the password before storing it
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $insertStmt->bind_param("ss", $username, $hashedPassword);
-        if ($insertStmt->execute()) {
-            // Registration successful, redirect to login page
-            header("Location: login2.php");
-            exit();
+        // Prepare a select statement
+        $sql = "SELECT id FROM users WHERE username = ?";
+
+        if ($stmt = $conn->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("s", $param_username);
+
+            // Set parameters
+            $param_username = trim($_POST["username"]);
+
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Store result
+                $stmt->store_result();
+
+                if ($stmt->num_rows == 1) {
+                    $username_err = "This username is already taken.";
+                } else {
+                    $username = trim($_POST["username"]);
+                }
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            $stmt->close();
         } else {
-            // Error occurred while inserting user
-            $errorMessage = "An error occurred. Please try again later.";
+            echo "Error preparing statement: " . $conn->error;
         }
     }
-}
 
+    // Validate password
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter a password.";
+    } elseif (strlen(trim($_POST["password"])) < 6) {
+        $password_err = "Password must have at least 6 characters.";
+    } else {
+        $password = trim($_POST["password"]);
+    }
+
+    // Validate confirm password
+    if (isset($_POST["confirm_password"])) {
+        if (empty(trim($_POST["confirm_password"]))) {
+            $confirm_password_err = "Please confirm password.";
+        } else {
+            $confirm_password = trim($_POST["confirm_password"]);
+            if (empty($password_err) && ($password != $confirm_password)) {
+                $confirm_password_err = "Password did not match.";
+            }
+        }
+    } else {
+        $confirm_password_err = "Please confirm password.";
+    }
+
+    // Check input errors before inserting in database
+    if (empty($username_err) && empty($password_err) && empty($confirm_password_err)) {
+        // Prepare an insert statement
+        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+        if ($stmt = $conn->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bind_param("ss", $param_username, $param_password);
+
+            // Set parameters
+            $param_username = $username;
+            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Redirect to login page
+                header("location: login2.php");
+            } else {
+                echo "Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            $stmt->close();
+        } else {
+            echo "Error preparing statement: " . $conn->error;
+        }
+    }
+
+    // Close connection
+    $conn->close();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
+    <title>Register</title>
     <style>
         @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body {
@@ -121,23 +186,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 14px;
             margin-bottom: 10px;
         }
+
+        .checkbox-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkbox-container label {
+            font-size: 14px;
+        }
+
+        .checkbox-container input {
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h2>Register</h2>
-        <?php
-        if (!empty($errorMessage)) {
-            echo '<div class="error-message">' . $errorMessage . '</div>';
+        <?php 
+        if (!empty($username_err)) {
+            echo '<div class="error-message">' . $username_err . '</div>';
+        } 
+        if (!empty($password_err)) {
+            echo '<div class="error-message">' . $password_err . '</div>';
+        } 
+        if (!empty($confirm_password_err)) {
+            echo '<div class="error-message">' . $confirm_password_err . '</div>';
         }
         ?>
-        <form method="post">
+        <form method="post" action="register.php">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
+            <input type="text" id="username" name="username" required value="<?php echo htmlspecialchars($username); ?>"><br>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            <button type="submit">Register</button>
-            <a href="login2.php">Already have an account?</a>
+            <input type="password" id="password" name="password" required><br>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required><br>
+            <button type="submit" name="submit">Register</button>
+            <div class="checkbox-container">
+                <a href="login2.php">Already have an account? Login here</a>
+            </div>
         </form>
     </div>
 </body>

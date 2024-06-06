@@ -2,27 +2,36 @@
 session_start();
 include "db.php";
 
-// Check if 'id' parameter is set in the URL
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Check if 'blog_id' parameter is set in the URL
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die('Error: Missing or invalid blog post ID.');
 }
- echo "<div class='logged-in-message'>Logged in as: " . $_SESSION["username"] . "</div>";
+
 $id = intval($_GET['id']); // Sanitize the input to prevent SQL injection
 
-$sql = "SELECT * FROM blog WHERE id=?";
+$sql = "SELECT b.id, b.blog_title, b.blog_description, bp.img_url, b.time, b.user_id FROM blog b LEFT JOIN blog_pictures bp ON b.id = bp.post_id WHERE b.id=?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$stmt->store_result(); // Store the result to get properties
 
-// Check if the query was successful
-if ($stmt->num_rows == 0) {
-    die('Error: Blog post not found.');
+if ($stmt === false) {
+    die('Error: ' . $conn->error);
 }
 
-$stmt->bind_result($blog_id, $blog_title, $blog_description, $time);
-$stmt->fetch();
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$stmt->store_result();
+$stmt->bind_result($blog_id, $blog_title, $blog_description, $image_url, $time, $user_id);
+
+// Check if the query was successful
+if ($stmt === false) {
+    die('Error: ' . $conn->error);
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +41,7 @@ $stmt->fetch();
     <title>Blog Post</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        @keyframes gradient {
+         @keyframes gradient {
             0% {
                 background-position: 0% 50%;
             }
@@ -256,17 +265,6 @@ $stmt->fetch();
         .comment-form button:hover {
             background-color: #6fa3cc;
         }
-                .logged-in-message {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            border: 2px solid #89CFF0;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #f2f2f2;
-        }
-
     </style>
 </head>
 
@@ -285,28 +283,26 @@ $stmt->fetch();
     </nav>
     <div class="container">
         <?php
-        echo "<div class='blog-post'>";
-        echo "<h2>" . htmlspecialchars($blog_title) . "</h2>";
-        echo "<p>" . htmlspecialchars($blog_description) . "</p>";
-        echo "<div class='time'>" . htmlspecialchars($time) . "</div>";
+        if ($stmt->num_rows > 0) {
+            while ($stmt->fetch()) {
+                echo "<div class='blog-post'>";
+                echo "<h2>" . htmlspecialchars($blog_title) . "</h2>";
+                echo "<p>" . htmlspecialchars($blog_description) . "</p>";
+                echo "<div class='time'>" . htmlspecialchars($time) . "</div>";
 
-        $sqlp = "SELECT img_url FROM blog_pictures WHERE post_id=?";
-        $stmtp = $conn->prepare($sqlp);
-        $stmtp->bind_param("i", $blog_id);
-        $stmtp->execute();
-        $stmtp->store_result();
-
-        if ($stmtp->num_rows > 0) {
-            $stmtp->bind_result($img_url);
-            while ($stmtp->fetch()) {
-                echo "<img src='" . htmlspecialchars($img_url) . "'>";
+                if (!empty($image_url)) {
+                    echo "<img src='" . htmlspecialchars($image_url) . "'>";
+                } else {
+                    echo "<p>No images available</p>";
+                }
+                echo "</div>";
             }
         } else {
-            echo "<p>No images available</p>";
+            echo "<div class='blog-post'>No blog post found</div>";
         }
-        echo "</div>";
         ?>
 
+        <!-- Your HTML content for comment section and form -->
         <div class="comment-form">
             <form id="commentForm">
                 <input name="comment" type="text" required>
@@ -318,19 +314,21 @@ $stmt->fetch();
         <div class="comment-section" id="commentSection">
             <h3>Comments</h3>
             <?php
-            $sqlc = "SELECT id, comment, user_id FROM blog_comment WHERE blog_id=?";
+            $sqlc = "SELECT id, user_id, comment FROM blog_comment WHERE blog_id=?";
             $stmtc = $conn->prepare($sqlc);
             $stmtc->bind_param("i", $id);
             $stmtc->execute();
             $stmtc->store_result();
+            $stmtc->bind_result($comment_id, $user_id, $comment);
 
-            if ($stmtc->num_rows > 0) {
-                $stmtc->bind_result($comment_id, $comment, $user_id);
+            if ($stmtc === false) {
+                echo "<p>Error fetching comments: " . $conn->error . "</p>";
+            } elseif ($stmtc->num_rows > 0) {
                 while ($stmtc->fetch()) {
-                    echo "<div class='comment-item' id='comment-" . $comment_id . "'>";
+                    echo "<div class='comment-item' id='comment-" . htmlspecialchars($comment_id) . "'>";
                     echo "<p>" . htmlspecialchars($comment) . "</p>";
                     if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
-                        echo "<button class='delete-button' onclick='deleteComment(" . $comment_id . ")'>Delete</button>";
+                        echo "<button class='delete-button' onclick='deleteComment(" . htmlspecialchars($comment_id) . ")'>Delete</button>";
                     }
                     echo "</div>";
                 }

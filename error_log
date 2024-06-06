@@ -1,0 +1,128 @@
+[05-Jun-2024 04:47:35 Europe/Riga] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown server host 'localhost:8889' (-2) in /home3/kantanud/toms.kantanudarznieciba.lv/db.php:8
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/db.php(8): mysqli->__construct()
+#1 /home3/kantanud/toms.kantanudarznieciba.lv/main.php(2): include('/home3/kantanud...')
+#2 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/db.php on line 8
+[05-Jun-2024 04:48:09 Europe/Riga] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown server host 'localhost:8889' (-2) in /home3/kantanud/toms.kantanudarznieciba.lv/db.php:8
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/db.php(8): mysqli->__construct()
+#1 /home3/kantanud/toms.kantanudarznieciba.lv/main.php(2): include('/home3/kantanud...')
+#2 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/db.php on line 8
+[05-Jun-2024 04:48:11 Europe/Riga] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown server host 'localhost:8889' (-2) in /home3/kantanud/toms.kantanudarznieciba.lv/db.php:8
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/db.php(8): mysqli->__construct()
+#1 /home3/kantanud/toms.kantanudarznieciba.lv/main.php(2): include('/home3/kantanud...')
+#2 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/db.php on line 8
+[05-Jun-2024 04:49:25 Europe/Riga] Login successful. Redirecting to main.php
+[05-Jun-2024 04:49:25 Europe/Riga] Session variables: Array
+(
+    [loggedin] => 1
+    [id] => 18
+    [username] => Henzen
+)
+
+[05-Jun-2024 04:49:27 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:49:29 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:49:31 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:49:37 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:49:38 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:49:49 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:50:09 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:50:16 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:51:03 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: The number of variables must match the number of parameters in the prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:14
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(14): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 14
+[05-Jun-2024 04:53:14 Europe/Riga] PHP Fatal error:  Uncaught Error: Call to undefined method mysqli_stmt::get_result() in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:26
+Stack trace:
+#0 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 26
+[05-Jun-2024 04:54:57 Europe/Riga] PHP Fatal error:  Uncaught ArgumentCountError: Number of bind variables doesn't match number of fields in prepared statement in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php:27
+Stack trace:
+#0 /home3/kantanud/toms.kantanudarznieciba.lv/comment.php(27): mysqli_stmt->bind_result()
+#1 {main}
+  thrown in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 27
+[05-Jun-2024 04:56:44 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 139
+[05-Jun-2024 04:56:48 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 139
+[05-Jun-2024 04:57:30 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 139
+[05-Jun-2024 04:58:13 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 139
+[05-Jun-2024 04:58:15 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 139
+[05-Jun-2024 04:58:58 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 362
+[05-Jun-2024 05:11:51 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:12:29 Europe/Riga] Login successful. Redirecting to main.php
+[05-Jun-2024 05:12:29 Europe/Riga] Session variables: Array
+(
+    [loggedin] => 1
+    [id] => 1
+    [username] => toms
+)
+
+[05-Jun-2024 05:12:30 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:12:43 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:13:33 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:18:16 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:18:19 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:18:21 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[05-Jun-2024 05:18:24 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[06-Jun-2024 01:45:22 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[06-Jun-2024 01:45:31 Europe/Riga] PHP Warning:  Undefined array key "loggedin" in /home3/kantanud/toms.kantanudarznieciba.lv/input.php on line 4
+[06-Jun-2024 01:45:37 Europe/Riga] PHP Warning:  Undefined array key "loggedin" in /home3/kantanud/toms.kantanudarznieciba.lv/input.php on line 4
+[06-Jun-2024 01:46:18 Europe/Riga] Login successful. Redirecting to main.php
+[06-Jun-2024 01:46:18 Europe/Riga] Session variables: Array
+(
+    [loggedin] => 1
+    [id] => 19
+    [username] => spageti
+)
+
+[06-Jun-2024 01:46:29 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[06-Jun-2024 01:52:46 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[06-Jun-2024 16:37:37 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[06-Jun-2024 16:37:42 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[07-Jun-2024 00:29:25 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[07-Jun-2024 00:29:31 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363
+[07-Jun-2024 00:30:07 Europe/Riga] Login successful. Redirecting to main.php
+[07-Jun-2024 00:30:07 Europe/Riga] Session variables: Array
+(
+    [loggedin] => 1
+    [id] => 20
+    [username] => abinieks
+)
+
+[07-Jun-2024 00:30:09 Europe/Riga] PHP Warning:  Undefined array key "user_id" in /home3/kantanud/toms.kantanudarznieciba.lv/comment.php on line 363

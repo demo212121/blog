@@ -4,7 +4,7 @@ session_start();
 var_dump($_SESSION["loggedin"]); // Debug statement to check the value of $_SESSION["loggedin"]
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-  echo "<div class='logged-in-message'>Logged in as: " . $_SESSION["username"] . "</div>";
+
 if (isset($_POST['save'])) {
     if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         $sql = "INSERT INTO blog (user_id, blog_title, blog_description, time)
@@ -241,17 +241,6 @@ if (isset($_POST['save'])) {
         button:hover {
             background-color: #6fa3cc;
         }
-                .logged-in-message {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            border: 2px solid #89CFF0;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #f2f2f2;
-        }
-
     </style>
 </head>
 

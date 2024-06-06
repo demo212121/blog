@@ -5,7 +5,7 @@ session_start();
 // Handle blog post deletion
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     // Display user information
-     echo "<div class='logged-in-message'>Logged in as: " . $_SESSION["username"] . "</div>";
+    echo "Logged in as: " . $_SESSION["username"];
 } else {
     // If the user is not logged in, display a message or redirect to the login page
     echo "You are not logged in. Please log in to view blog posts.";
@@ -294,16 +294,6 @@ $result = $conn->query($sql);
         .like-button i.fa-heart {
             animation: pulse 0.6s infinite alternate;
             color: red;
-        }
-             .logged-in-message {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            border: 2px solid #89CFF0;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #f2f2f2;
         }
 
         @keyframes pulse {

@@ -60,17 +60,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validate confirm password
-    if (isset($_POST["confirm_password"])) {
-        if (empty(trim($_POST["confirm_password"]))) {
-            $confirm_password_err = "Please confirm password.";
-        } else {
-            $confirm_password = trim($_POST["confirm_password"]);
-            if (empty($password_err) && ($password != $confirm_password)) {
-                $confirm_password_err = "Password did not match.";
-            }
-        }
-    } else {
+    if (empty(trim($_POST["confirm_password"]))) {
         $confirm_password_err = "Please confirm password.";
+    } else {
+        $confirm_password = trim($_POST["confirm_password"]);
+        if (empty($password_err) && ($password != $confirm_password)) {
+            $confirm_password_err = "Password did not match.";
+        }
     }
 
     // Check input errors before inserting in database

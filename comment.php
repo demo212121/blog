@@ -30,6 +30,7 @@ $stmt->bind_result($blog_id, $blog_title, $blog_description, $image_url, $time, 
 if ($stmt === false) {
     die('Error: ' . $conn->error);
 }
+echo "Blog ID: " . $id;
 ?>
 
 <!DOCTYPE html>
@@ -300,47 +301,54 @@ if ($stmt === false) {
         } else {
             echo "<div class='blog-post'>No blog post found</div>";
         }
+        
+        if(isset($_POST["com"])) {
+            $com = $_POST["com"];
+            echo $com;
+                
+            $komentars="INSERT INTO blog_comment (blog_id, user_id, comment) VALUES ('$id', '$id', '$com')";
+            $conn->query($komentars);
+        }
         ?>
-
-        <!-- Your HTML content for comment section and form -->
-        <div class="comment-form">
-            <form id="commentForm">
-                <input name="comment" type="text" required>
-                <input type="hidden" name="blog_id" value="<?php echo $id; ?>">
-                <button type="submit">Submit</button>
+        <div class="comment">
+            <form class="comment-form" method="post">
+                <input name="com" type="text" placeholder="Add a comment...">
+                <button type="submit" name="submit">Submit</button>
             </form>
         </div>
+</div>
         <div id="commentResponse"></div>
         <div class="comment-section" id="commentSection">
-            <h3>Comments</h3>
-            <?php
-            $sqlc = "SELECT id, user_id, comment FROM blog_comment WHERE blog_id=?";
-            $stmtc = $conn->prepare($sqlc);
-            $stmtc->bind_param("i", $id);
-            $stmtc->execute();
-            $stmtc->store_result();
-            $stmtc->bind_result($comment_id, $user_id, $comment);
+    <h3>Comments</h3>
+    <?php
+    $sqlc = "SELECT id, user_id, comment FROM blog_comment WHERE blog_id=?";
+    $stmtc = $conn->prepare($sqlc);
+    $stmtc->bind_param("i", $id);
+    $stmtc->execute();
+    $stmtc->store_result();
+    $stmtc->bind_result($comment_id, $user_id, $comment);
 
-            if ($stmtc === false) {
-                echo "<p>Error fetching comments: " . $conn->error . "</p>";
-            } elseif ($stmtc->num_rows > 0) {
-                while ($stmtc->fetch()) {
-                    echo "<div class='comment-item' id='comment-" . htmlspecialchars($comment_id) . "'>";
-                    echo "<p>" . htmlspecialchars($comment) . "</p>";
-                    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
-                        echo "<button class='delete-button' onclick='deleteComment(" . htmlspecialchars($comment_id) . ")'>Delete</button>";
-                    }
-                    echo "</div>";
-                }
-            } else {
-                echo "<p>No comments yet.</p>";
+    if ($stmtc === false) {
+        echo "<p>Error fetching comments: " . $conn->error . "</p>";
+    } elseif ($stmtc->num_rows > 0) {
+        while ($stmtc->fetch()) {
+            echo "<div class='comment-item' id='comment-" . htmlspecialchars($comment_id) . "'>";
+            echo "<p>" . htmlspecialchars($comment) . "</p>";
+            if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
+                echo "<button class='delete-button' onclick='deleteComment(" . htmlspecialchars($comment_id) . ")'>Delete</button>";
             }
-            ?>
-        </div>
+            echo "</div>";
+        }
+    } else {
+        echo "<p>No comments yet.</p>";
+    }
+    ?>
+</div>
+
     </div>
 
     <script>
-        document.getElementById('commentForm').addEventListener('submit', function (event) {
+        document.querySelector('.comment-form').addEventListener('submit', function (event) {
             event.preventDefault();
             var formData = new FormData(this);
 
